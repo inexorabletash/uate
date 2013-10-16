@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<title>uate Tests</title>
+
+<script src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" type="text/css" media="screen" />
+
+<h1 id="qunit-header">uate Tests</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture">test markup, will be hidden</div>
+
+<script type="text/javascript" src="uate.js"></script>
+<script>
+
+test("Basics", function() {
+  var a = 1;
+  var b = 2;
+  equal( eval(uate("${a} + ${b} = ${a + b}")), "1 + 2 = 3" );
+
+  function tag(strings /*, ...values*/) {
+    var values = [].slice.call(arguments, 1);
+    ok(strings[0] === 'a');
+    ok(strings[1] === 'b');
+    ok(values[0] === 42);
+    return 'whatever';
+  }
+
+  equal( eval(uate(tag, "a${42}b")), "whatever" );
+
+  equal( eval(uate(halfbaked, "a\n${42}b")), "a\\n42b" );
+});
+
+test("String Tag", function() {
+  var o = { p: function() { return "pass"; } };
+  equal( eval(uate('o.p', "a${42}b")), "pass" );
+});
+
+test("Unsafe HTML", function() {
+  var naughty = "<script>hack(\"foo\");<\/script>";
+
+  equal(
+    eval(uate(unsafehtml, "<p>${naughty}</p>")),
+    "<p>&lt;script&gt;hack(&quot;foo&quot;);&lt;/script&gt;</p>"
+  );
+});
+
+</script>
