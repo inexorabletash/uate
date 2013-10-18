@@ -2,6 +2,10 @@ uate - ES5 "Tagged Template Strings"
 ------------------------------------
 (Pronounced "you ate" as in "evaluate"...)
 
+```js
+var a = 1, b = 2; eval(uate( "${a} + ${b} = ${a + b}" )); // "1 + 2 = 3"
+```
+
 ### Usage
 ```js
 eval(uate( template ))
