@@ -21,7 +21,7 @@ are evaluated in the local scope.
 containing an expression that in the local scope will yield a function e.g.
 `'console.log'`. The function is called as `tag(strings, ...substitutions)`.
 
-The built-in `unsafehtml` function does basic &<>" escapes of substutions.
+The built-in `unsafehtml` function does basic &<>"' escapes of substutions.
 
 The built-in `halfbaked` function yields escaped strings.
 
