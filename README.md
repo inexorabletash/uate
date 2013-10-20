@@ -36,6 +36,23 @@ eval(uate( halfbaked, "a\n${42}b" )); // "a\\n42b"
 eval(uate( unsafehtml, "<p>${untrusted_data}</p>" )); // ampersands galore
 ```
 
+### Tag Functions
+A trivial tag function has this form:
+```js
+function tag(strings /*, ...substitutions*/) {
+  var substitutions = [].slice.call(arguments, 1);
+
+  var result = strings[0];
+  for (var i = 0; i < substitutions.length; ++i) {
+    result += substitutions[i];
+    result += strings[i + 1];
+  }
+  return result;
+}
+```
+Although it is not very useful in this ES5 hack, `strings.raw` is
+another array containing escaped versions of the strings.
+
 ### Inspiration
 ES6 Tagged String Templates, designed by Mike Samuel, et. al.
 

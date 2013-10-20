@@ -74,8 +74,8 @@
     var substitutions = [].slice.call(arguments, 1);
 
     var cooked = Object(callSite);
-    var literalSegments = cooked["length"]|0;
-    if (literalSegments <= 0) return "";
+    var literalSegments = cooked.length|0;
+    if (literalSegments <= 0) return '';
     var stringElements = [];
     var nextIndex = 0;
     while (true) {
@@ -93,9 +93,9 @@
     var substitutions = [].slice.call(arguments, 1);
 
     var cooked = Object(callSite);
-    var raw = cooked["raw"];
-    var literalSegments = raw["length"]|0;
-    if (literalSegments <= 0) return "";
+    var raw = cooked.raw;
+    var literalSegments = raw.length|0;
+    if (literalSegments <= 0) return '';
     var stringElements = [];
     var nextIndex = 0;
     while (true) {
@@ -113,20 +113,21 @@
     var substitutions = [].slice.call(arguments, 1);
 
     function escapeHTML(text) {
-      return text.replace(/[&<>"]/g, function(c) {
+      return text.replace(/[&<>"']/g, function(c) {
         switch (c) {
-        case "&": return "&amp;";
-        case "<": return "&lt;";
-        case ">": return "&gt;";
-        case "\"": return "&quot;";
+        case '&': return '&amp;';
+        case '<': return '&lt;';
+        case '>': return '&gt;';
+        case '"': return '&quot;';
+        case "'": return '&#39;';
         default: return c;
         }
       });
     }
 
     var cooked = Object(callSite);
-    var literalSegments = cooked["length"]|0;
-    if (literalSegments <= 0) return "";
+    var literalSegments = cooked.length|0;
+    if (literalSegments <= 0) return '';
     var stringElements = [];
     var nextIndex = 0;
     while (true) {

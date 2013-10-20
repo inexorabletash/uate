@@ -38,11 +38,11 @@ test("String Tag", function() {
 });
 
 test("Unsafe HTML", function() {
-  var naughty = "<script>hack(\"foo\");<\/script>";
+  var naughty = "<script>hack(\"foo'bar\");<\/script>";
 
   equal(
     eval(uate(unsafehtml, "<p>${naughty}</p>")),
-    "<p>&lt;script&gt;hack(&quot;foo&quot;);&lt;/script&gt;</p>"
+    "<p>&lt;script&gt;hack(&quot;foo&#39;bar&quot;);&lt;/script&gt;</p>"
   );
 });
 
