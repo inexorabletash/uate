@@ -46,4 +46,15 @@ test("Unsafe HTML", function() {
   );
 });
 
+test("Parsing", function() {
+  equal( eval(uate("a${ {}.toString.call({}) }b")), "a[object Object]b" );
+  var $ = 1;
+  equal( eval(uate("a${ ++$ }b")), "a2b" );
+  equal( eval(uate("a$b")), "a$b" );
+  equal( eval(uate("a{b")), "a{b" );
+  equal( eval(uate("a}b")), "a}b" );
+  equal( eval(uate("a{}b")), "a{}b" );
+  equal( eval(uate("a$ {}b")), "a$ {}b" );
+});
+
 </script>
