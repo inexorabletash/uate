@@ -1,54 +1,69 @@
 (function(global) {
 
-  if (!('name' in Function.prototype)) {
-    Object.defineProperty(Function.prototype, 'name', {
-      get: function() { return String(this).replace(/^function (.*)\([\s\S]*$/, '$1'); }
-    });
+  function parse(s) {
+    var literalPortions = [], substitutions = [];
+
+    var inLP = true, stack = [], literalPortion = '', tokens = '';
+    while (s.length) {
+      var seen = s.substring(0, 2) === '${' ? '${' : s.charAt(0);
+      s = s.substring(seen.length);
+      if (inLP) {
+        if (seen === '${') {
+          literalPortions.push(literalPortion); literalPortion = '';
+          inLP = false;
+          stack.push(true);
+        } else {
+          literalPortion += seen;
+        }
+      } else if (seen === '{') {
+        tokens += '{';
+        stack.push(false);
+      } else if (seen === '}') {
+        if (!stack.length) {
+          continue;
+        } else if (stack.pop()) {
+          substitutions.push(tokens); tokens = '';
+          inLP = true;
+        } else {
+          tokens += '}';
+        }
+      } else {
+        tokens += seen;
+      }
+    }
+    literalPortions.push(literalPortion);
+
+    return [literalPortions, substitutions];
+  }
+
+  function memoize(f) {
+    var cache = Object.create(null);
+    return function(arg) {
+      if (arg in cache) return cache[arg];
+      return cache[arg] = f(arg);
+    };
+  }
+
+  parse = memoize(parse);
+
+  function functionName(f) {
+    if ('name' in f) return f.name;
+    return String(f).replace(/^function (.*)\([\s\S]*$/, '$1');
   }
 
   function uate(a, b) {
     var tag = b === undefined ? undefined : a,
         template = b === undefined ? a : b;
     if (typeof tag === 'function')
-      var callExpr = tag.name;
+      var callExpr = functionName(tag);
     else if (tag !== undefined)
       callExpr = String(tag);
     else
       callExpr = 'uate.default';
     var templateStr = String(template);
 
-    var literalPortions = [], substitutions = [];
-    (function(s) {
-      var inLP = true, stack = [], literalPortion = '', tokens = '';
-      while (s.length) {
-        var seen = s.substring(0, 2) === '${' ? '${' : s.charAt(0);
-        s = s.substring(seen.length);
-        if (inLP) {
-          if (seen === '${') {
-            literalPortions.push(literalPortion); literalPortion = '';
-            inLP = false;
-            stack.push(true);
-          } else {
-            literalPortion += seen;
-          }
-        } else if (seen === '{') {
-          tokens += '{';
-          stack.push(false);
-        } else if (seen === '}') {
-          if (!stack.length) {
-            continue;
-          } else if (stack.pop()) {
-            substitutions.push(tokens); tokens = '';
-            inLP = true;
-          } else {
-            tokens += '}';
-          }
-        } else {
-          tokens += seen;
-        }
-      }
-      literalPortions.push(literalPortion);
-    }(templateStr));
+    var parsed = parse(templateStr);
+    var literalPortions = parsed[0], substitutions = parsed[1];
 
     return callExpr + '(uate.uncook(' + JSON.stringify(literalPortions) + ')' +
       (substitutions.length ? ',' + substitutions.join(',') : '') + ')';
