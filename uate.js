@@ -1,11 +1,16 @@
 (function(global) {
 
+  if (!('name' in Function.prototype)) {
+    Object.defineProperty(Function.prototype, 'name', {
+      get: function() { return String(this).replace(/^function (.*)\([\s\S]*$/, '$1'); }
+    });
+  }
+
   function uate(a, b) {
     var tag = b === undefined ? undefined : a,
         template = b === undefined ? a : b;
-
     if (typeof tag === 'function')
-      var callExpr = String(tag).replace(/^function (.*)\([\s\S]*$/, '$1');
+      var callExpr = tag.name;
     else if (tag !== undefined)
       callExpr = String(tag);
     else
