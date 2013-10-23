@@ -47,6 +47,8 @@
   parse = memoize(parse);
 
   function functionName(f) {
+    if (f === halfbaked) return 'halfbaked';
+    if (f === unsafehtml) return 'unsafehtml';
     if ('name' in f) return f.name;
     return String(f).replace(/^function (.*)\([\s\S]*$/, '$1');
   }
@@ -69,7 +71,7 @@
       (substitutions.length ? ',' + substitutions.join(',') : '') + ')';
   }
 
-  uate.uncook = function(cooked) {
+  uate['uncook'] = function(cooked) {
     function escapeString(s) {
       return String(s).replace(/[^\x20-\x5b\x5d-\x7e]/g, function(c) {
         switch (c) {
@@ -86,11 +88,11 @@
         }
       });
     }
-    cooked.raw = cooked.map(escapeString);
+    cooked['raw'] = cooked.map(escapeString);
     return cooked;
   };
 
-  uate.default = function(callSite /*, ...substitutions*/) {
+  uate['default'] = function(callSite /*, ...substitutions*/) {
     var substitutions = [].slice.call(arguments, 1);
 
     var cooked = Object(callSite);
@@ -113,7 +115,7 @@
     var substitutions = [].slice.call(arguments, 1);
 
     var cooked = Object(callSite);
-    var raw = cooked.raw;
+    var raw = cooked['raw'];
     var literalSegments = raw.length|0;
     if (literalSegments <= 0) return '';
     var stringElements = [];
@@ -161,8 +163,8 @@
     }
   }
 
-  global.uate = uate;
-  global.halfbaked = halfbaked;
-  global.unsafehtml = unsafehtml;
+  global['uate'] = uate;
+  global['halfbaked'] = halfbaked;
+  global['unsafehtml'] = unsafehtml;
 
 }(this));
