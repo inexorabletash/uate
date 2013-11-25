@@ -37,12 +37,20 @@ test("String Tag", function() {
   equal( eval(uate('o.p', "a${42}b")), "pass" );
 });
 
-test("Unsafe HTML", function() {
+test("HTML escaping", function() {
   var naughty = "<script>hack(\"foo'bar\");<\/script>";
 
   equal(
-    eval(uate(unsafehtml, "<p>${naughty}</p>")),
+    eval(uate(html, "<p>${naughty}</p>")),
     "<p>&lt;script&gt;hack(&quot;foo&#39;bar&quot;);&lt;/script&gt;</p>"
+  );
+});
+
+test("URI Encoding", function() {
+  var search = "a b & = ? %";
+  equal(
+    eval(uate(uri, "http://example.com?q=${search}")),
+    "http://example.com?q=a%20b%20%26%20%3D%20%3F%20%25"
   );
 });
 

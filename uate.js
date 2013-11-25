@@ -48,7 +48,8 @@
 
   function functionName(f) {
     if (f === halfbaked) return 'halfbaked';
-    if (f === unsafehtml) return 'unsafehtml';
+    if (f === html) return 'html';
+    if (f === uri) return 'uri';
     if ('name' in f) return f.name;
     return String(f).replace(/^function (.*)\([\s\S]*$/, '$1');
   }
@@ -131,40 +132,45 @@
     }
   }
 
-  function unsafehtml(callSite /*, ...substitutions*/) {
-    var substitutions = [].slice.call(arguments, 1);
+  function apply(f) {
+    return function(callSite /*, ...substitutions*/) {
+      var substitutions = [].slice.call(arguments, 1);
 
-    function escapeHTML(text) {
-      return text.replace(/[&<>"']/g, function(c) {
-        switch (c) {
-        case '&': return '&amp;';
-        case '<': return '&lt;';
-        case '>': return '&gt;';
-        case '"': return '&quot;';
-        case "'": return '&#39;';
-        default: return c;
-        }
-      });
-    }
-
-    var cooked = Object(callSite);
-    var literalSegments = cooked.length|0;
-    if (literalSegments <= 0) return '';
-    var stringElements = [];
-    var nextIndex = 0;
-    while (true) {
-      var nextSeg = String(cooked[nextIndex]);
-      stringElements.push(nextSeg);
-      if (nextIndex + 1 === literalSegments)
-        return stringElements.join('');
-      var nextSub = String(substitutions[nextIndex]);
-      stringElements.push(escapeHTML(nextSub));
-      nextIndex = nextIndex + 1;
-    }
+      var cooked = Object(callSite);
+      var literalSegments = cooked.length|0;
+      if (literalSegments <= 0) return '';
+      var stringElements = [];
+      var nextIndex = 0;
+      while (true) {
+        var nextSeg = String(cooked[nextIndex]);
+        stringElements.push(nextSeg);
+        if (nextIndex + 1 === literalSegments)
+          return stringElements.join('');
+        var nextSub = String(substitutions[nextIndex]);
+        stringElements.push(f(nextSub));
+        nextIndex = nextIndex + 1;
+      }
+    };
   }
+
+  var html = apply(function escapeHTML(text) {
+    return text.replace(/[&<>"']/g, function(c) {
+      switch (c) {
+      case '&': return '&amp;';
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '"': return '&quot;';
+      case "'": return '&#39;';
+      default: return c;
+      }
+    });
+  });
+
+  var uri = apply(encodeURIComponent);
 
   global['uate'] = uate;
   global['halfbaked'] = halfbaked;
-  global['unsafehtml'] = unsafehtml;
+  global['html'] = html;
+  global['uri'] = uri;
 
 }(this));

@@ -21,7 +21,9 @@ are evaluated in the local scope.
 containing an expression that in the local scope will yield a function e.g.
 `'console.log'`. The function is called as `tag(strings, ...substitutions)`.
 
-The built-in `unsafehtml` function does HTML entity escaping of `&<>"'`.
+The built-in `html` function does HTML entity escaping of `&<>"'` in substitutions.
+
+The built-in `uri` function applies encodeURIComponent to substitutions.
 
 The built-in `halfbaked` function yields escaped strings.
 
@@ -33,7 +35,9 @@ eval(uate( tag, "a${ 42 }b" )); // whatever tag wants
 
 eval(uate( halfbaked, "a\n${42}b" )); // "a\\n42b"
 
-eval(uate( unsafehtml, "<p>${untrusted_data}</p>" )); // ampersands galore
+eval(uate( html, "<p>${untrusted_data}</p>" )); // ampersands galore
+
+eval(uate( url, "http://example.com?q=${search}" )); // percents galore
 ```
 
 ### Tag Functions
