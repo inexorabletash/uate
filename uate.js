@@ -15,7 +15,8 @@
 
     var inLP = true, stack = [], literalPortion = '', tokens = '';
     while (s.length) {
-      var seen = s.substring(0, 2) === '${' ? '${' : s.charAt(0);
+      var seen = s.substring(0, 2) === '${' ? '${' : 
+          s.charAt(0) === '\\' ? s.substring(0, 2) : s.charAt(0);
       s = s.substring(seen.length);
       if (inLP) {
         if (seen === '${') {
