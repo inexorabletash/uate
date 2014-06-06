@@ -15,9 +15,12 @@
 
     var inLP = true, stack = [], literalPortion = '', tokens = '';
     while (s.length) {
-      var seen = s.substring(0, 2) === '${' ? '${' : 
-          s.charAt(0) === '\\' ? s.substring(0, 2) : s.charAt(0);
+      var seen = s.substring(0, 2) === '${' ? '${' : s.charAt(0);
       s = s.substring(seen.length);
+      if (seen === '\\') {
+        seen = s.substring(0, 1);
+        s = s.substring(1);
+      }
       if (inLP) {
         if (seen === '${') {
           literalPortions.push(literalPortion); literalPortion = '';

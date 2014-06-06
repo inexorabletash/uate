@@ -63,6 +63,7 @@ test("Parsing", function() {
   equal( eval(uate("a}b")), "a}b" );
   equal( eval(uate("a{}b")), "a{}b" );
   equal( eval(uate("a$ {}b")), "a$ {}b" );
+  equal( eval(uate("a\\${}b")), "a${}b" );
 });
 
 </script>
