@@ -4,8 +4,7 @@
     var cache = Object.create(null);
     return function(arg) {
       var key = '$' + arg;
-      if (key in cache) return cache[key];
-      return cache[key] = f(arg);
+      return (key in cache) ? cache[key] : cache[key] = f(arg);
     };
   }
 
