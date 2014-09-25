@@ -62,17 +62,18 @@
   function uate(a, b) {
     var tag = b === undefined ? undefined : a,
         template = b === undefined ? a : b;
-    if (typeof tag === 'function')
-      var callExpr = functionName(tag);
-    else if (tag !== undefined)
-      callExpr = String(tag);
-    else
-      callExpr = 'uate.default';
     var templateStr = String(template);
-
     var parsed = parse(templateStr);
     var literalPortions = parsed[0], substitutions = parsed[1];
 
+    if (!tag) {
+      var expr = JSON.stringify(literalPortions[0]);
+      for (var i = 0; i < substitutions.length; ++i)
+        expr += ' + (' + substitutions[i] + ') + ' + JSON.stringify(literalPortions[i + 1]);
+      return expr;
+    }
+
+    var callExpr = (typeof tag === 'function') ? functionName(tag) : String(tag);
     return callExpr + '(uate.uncook(' + JSON.stringify(literalPortions) + ')' +
       (substitutions.length ? ',' + substitutions.join(',') : '') + ')';
   }
@@ -98,26 +99,6 @@
     }
     return Object.freeze(Object.defineProperty(
       cooked, 'raw', {value: cooked.map(escapeString)}));
-  };
-
-  // The default template function.
-  uate['default'] = function(callSite /*, ...substitutions*/) {
-    var substitutions = [].slice.call(arguments, 1);
-
-    var cooked = Object(callSite);
-    var literalSegments = cooked.length|0;
-    if (literalSegments <= 0) return '';
-    var stringElements = [];
-    var nextIndex = 0;
-    while (true) {
-      var nextSeg = String(cooked[nextIndex]);
-      stringElements.push(nextSeg);
-      if (nextIndex + 1 === literalSegments)
-        return stringElements.join('');
-      var nextSub = String(substitutions[nextIndex]);
-      stringElements.push(nextSub);
-      nextIndex = nextIndex + 1;
-    }
   };
 
   // Sample template function: like ES6's String.raw
