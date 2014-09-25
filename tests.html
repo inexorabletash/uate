@@ -66,4 +66,12 @@ test("Parsing", function() {
   equal( eval(uate("a\\${}b")), "a${}b" );
 });
 
+test("Memoizing", function() {
+  var $ = 1;
+  equal( eval(uate("a${ ++$ }b")), "a2b" );
+  equal( eval(uate("a${ ++$ }b")), "a3b" );
+  equal( eval(uate("a${ ++$ }b")), "a4b" );
+  equal( eval(uate("a${ ++$ }b")), "a5b" );
+});
+
 </script>

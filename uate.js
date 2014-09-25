@@ -2,9 +2,9 @@
 
   function memoize(f) {
     var cache = Object.create(null);
-    return function(arg) {
-      var key = '$' + arg;
-      return (key in cache) ? cache[key] : cache[key] = f(arg);
+    return function() {
+      var key = JSON.stringify([].slice.call(arguments));
+      return (key in cache) ? cache[key] : cache[key] = f.apply(this, arguments);
     };
   }
 
