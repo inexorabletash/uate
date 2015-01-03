@@ -75,6 +75,10 @@ is able to access the "raw" (unescaped) string fragments which
 allows it to implement domain specific languages using its own
 rich syntax. This ES5 version is just a toy.
 
+### Tests
+
+Tests are included - run them at: https://inexorabletash.github.io/uate/tests.html
+
 ### References
 * http://tc39wiki.calculist.org/es6/template-strings/
 * http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts
