@@ -69,7 +69,7 @@
     if (!tag) {
       var expr = JSON.stringify(literalPortions[0]);
       for (var i = 0; i < substitutions.length; ++i)
-        expr += ' + (' + substitutions[i] + ') + ' + JSON.stringify(literalPortions[i + 1]);
+        expr += '+(' + substitutions[i] + ')+' + JSON.stringify(literalPortions[i + 1]);
       return expr;
     }
 
@@ -102,10 +102,10 @@
   };
 
   // Sample template function: like ES6's String.raw
-  function halfbaked(callSite /*, ...substitutions*/) {
+  function halfbaked(template /*, ...substitutions*/) {
     var substitutions = [].slice.call(arguments, 1);
 
-    var cooked = Object(callSite);
+    var cooked = Object(template);
     var raw = cooked['raw'];
     var literalSegments = raw.length|0;
     if (literalSegments <= 0) return '';
@@ -124,10 +124,10 @@
 
   // Helper for simple template functions that just transform substitutions.
   function apply(f) {
-    return function(callSite /*, ...substitutions*/) {
+    return function(template /*, ...substitutions*/) {
       var substitutions = [].slice.call(arguments, 1);
 
-      var cooked = Object(callSite);
+      var cooked = Object(template);
       var literalSegments = cooked.length|0;
       if (literalSegments <= 0) return '';
       var stringElements = [];
